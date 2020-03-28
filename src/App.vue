@@ -1,16 +1,29 @@
 <template>
   <div id="app">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
+    <GoogleMap />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import GoogleMap from './components/GoogleMap.vue'
 
 export default {
   name: 'App',
+
   components: {
-    HelloWorld
+    GoogleMap
+  },
+
+  data() {
+    return {
+    }
+  },
+
+  methods: {
+  },
+
+  computed: {
   }
 }
 </script>
