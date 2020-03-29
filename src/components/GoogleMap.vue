@@ -2,35 +2,41 @@
   <v-flex xs12>
     <v-layout wrap>
       <v-flex xs12 align-center justify-center class="location-lookup pa-3">
-        <h1 class="text-center">Enter Address</h1>
-        <!-- <vue-google-autocomplete
-          id="address-lookup"
-          classname="input-text form-control text-center"
-          placeholder="Enter address"
-          @placechanged="changeAddress"
-        /> -->
+        <div class="intro mb-4">
+          <h1 class="text-center mb-4">2KM Lockdown Limit</h1>
+          <p>Due to the increase in the number of infections of the COVID-19 Virus, also known as CoronaVirus, the Irish government has implemented new restrictions.</p>
+          <p>Non-essential travel outside your home is restricted to a maximum of 2KM for exercise.</p>
+          <p>Below you can enter an address to see the recommended limit on the map.</p>
+          <p>You can read more about the COVID-19 restrictions on the <a href="https://www2.hse.ie/coronavirus/" target="_blank">HSE</a> website.</p>
+        </div>
 
-        <vuetify-google-autocomplete
-          name="Enter Address"
-          class="mb-2"
-          placeholder="Enter Address"
-          prepend-icon="mdi-home"
-          ref="enter_address"
-          id="enter-address-input"
-          classname="form-control"
-          enable-geolocation
-          types="geocode"
-          @keypress="changeAddress"
-          @placechanged="changeAddress"
-          @no-results-found="changeAddressNotFound"
-          data-vv-delay="100"
-          :error="errors.has('Enter Address')"
-          :error-messages="errors.collect('Enter Address')"
-          data-vv-as="Enter Address"
-        >
-        </vuetify-google-autocomplete>
+        <div class="lookup-input my-4">
+          <vuetify-google-autocomplete
+            name="Enter Address"
+            class="mb-2"
+            autofocus
+            placeholder="Enter Address"
+            prepend-icon="mdi-home"
+            ref="enter_address"
+            id="enter-address-input"
+            classname="form-control mb-4"
+            label="Enter Address"
+            enable-geolocation
+            types="geocode"
+            @keypress="changeAddress"
+            @placechanged="changeAddress"
+            @no-results-found="changeAddressNotFound"
+            data-vv-delay="100"
+            :error="errors.has('Enter Address')"
+            :error-messages="errors.collect('Enter Address')"
+            data-vv-as="Enter Address"
+          >
+          </vuetify-google-autocomplete>
+        </div>
 
-        <div class="google-map" :id="mapName"></div>
+        <div class="lookup-map my-4">
+          <div class="google-map" :id="mapName"></div>
+        </div>
       </v-flex>
     </v-layout>
   </v-flex>
@@ -104,12 +110,12 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
       initMap() {
         this.googleMapIcons = {
           default:
-            'https://www.google.com/maps/vt/icon/name=assets/icons/poi/tactile/pinlet_outline-1-small.png,assets/icons/poi/tactile/pinlet-1-small.png,assets/icons/poi/quantum/pinlet/home_pinlet-1-small.png&highlight=ffffff,'+this.colors.primary+',ffffff&color=ff000000?scale=2'
+            'https://www.google.com/maps/vt/icon/name=assets/icons/poi/tactile/pinlet_outline-1-small.png,assets/icons/poi/tactile/pinlet-1-small.png,assets/icons/poi/quantum/pinlet/home_pinlet-1-small.png&highlight=ffffff,FF5722,ffffff&color=ff000000?scale=2'
         }
         let element = document.getElementById(this.mapName)
         let options = this.defaultMapOptions
         this.googleMap = new google.maps.Map(element, options)
-        this.loopLocations()
+        // this.loopLocations()
       },
 
       loopLocations() {
@@ -125,17 +131,16 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
       },
 
       changeAddress(addressData, placeResultData, id) {
-        console.log('addressData', addressData)
-        console.log('placeResultData', placeResultData)
-        console.log('id', id)
         let self = this
 
         this.markers.forEach(marker => {
           marker.setMap(null)
+          marker = null
         })
 
         this.circles.forEach(circle => {
           circle.setMap(null)
+          circle = null
         })
 
         let mapBounds = new google.maps.LatLngBounds()
@@ -197,10 +202,10 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
             center: { lat: self.userAddress.coordinate.latitude, lng: self.userAddress.coordinate.longitude },
             position: { lat: self.userAddress.coordinate.latitude, lng: self.userAddress.coordinate.longitude },
             radius: self.defaultMapOptions.radius,
-            strokeColor: '#'+self.colors.primary,
+            strokeColor: self.$vuetify.theme.themes.light.primary,
             strokeOpacity: 0.9,
-            strokeWeight: 1,
-            fillColor: '#'+self.colors.primary,
+            strokeWeight: 2,
+            fillColor: self.$vuetify.theme.themes.light.primary,
             fillOpacity: 0.2,
           })
           this.circles.push(newMapCircle)
@@ -237,6 +242,18 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
 </script>
 
 <style scoped lang="scss">
+.location-lookup {
+  max-width: 1024px !important;
+  margin: 0 auto !important;
+}
+
+.lookup-input {
+  width: 90%;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .input-text {
   min-width: 300px;
   margin-bottom: 1rem;
