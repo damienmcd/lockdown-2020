@@ -3,7 +3,7 @@
     <v-layout wrap>
       <v-flex xs12 align-center justify-center class="location-lookup pa-3">
         <div class="intro mb-4">
-          <h1 class="text-center mb-4">2KM Lockdown Limit</h1>
+          <h1 class="text-center mb-4">Lockdown Map</h1>
           <p>Due to the increase in the number of infections of the COVID-19 Virus, also known as CoronaVirus, the Irish government has implemented new restrictions.</p>
           <p>Non-essential travel outside your home is restricted to a maximum of 2KM for exercise.</p>
           <p>Below you can enter an address to see the recommended limit on the map.</p>
