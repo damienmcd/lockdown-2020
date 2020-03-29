@@ -23,7 +23,7 @@
       <v-flex xs12>
         <v-layout wrap>
           <v-flex xs12 align-center justify-center class="location-lookup pa-3">
-            Created by &copy;<a href="https://twitter.com/fishnaldo" target="_blank">Damien McDonnell</a>.
+            Created by &copy;<a href="https://www.linkedin.com/in/damienmcdonnelldev/" target="_blank">Damien McDonnell</a>.
           </v-flex>
         </v-layout>
       </v-flex>
