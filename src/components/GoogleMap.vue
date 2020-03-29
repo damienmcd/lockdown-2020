@@ -1,57 +1,57 @@
 <template>
   <v-flex xs12>
     <v-layout wrap>
-      <v-flex xs12 class="location-targeting">
-        <h1>Enter Address</h1>
+      <v-flex xs12 align-center justify-center class="location-lookup pa-3">
+        <h1 class="text-center">Enter Address</h1>
+        <!-- <vue-google-autocomplete
+          id="address-lookup"
+          classname="input-text form-control text-center"
+          placeholder="Enter address"
+          @placechanged="changeAddress"
+        /> -->
 
-        <gmap-autocomplete
-          @place_changed="changeAddress">
-        </gmap-autocomplete>
-        <!-- <v-btn @click="addMarker">Add</v-btn> -->
-
-        <gmap-map
-          :id="mapName"
-          ref="mapRef"
-          :center="defaultMapOptions.center"
-          :zoom="7"
-          style="width:100%;  height: 70vh;"
+        <vuetify-google-autocomplete
+          name="Enter Address"
+          class="mb-2"
+          placeholder="Enter Address"
+          prepend-icon="mdi-home"
+          ref="enter_address"
+          id="enter-address-input"
+          classname="form-control"
+          enable-geolocation
+          types="geocode"
+          @keypress="changeAddress"
+          @placechanged="changeAddress"
+          @no-results-found="changeAddressNotFound"
+          data-vv-delay="100"
+          :error="errors.has('Enter Address')"
+          :error-messages="errors.collect('Enter Address')"
+          data-vv-as="Enter Address"
         >
-          <gmap-marker
-            :key="index"
-            v-for="(marker, index) in markers"
-            :position="marker.position"
-            @click="center=marker.position"
-          ></gmap-marker>
-          <gmap-circle
-            :key="index"
-            v-for="(circle, index) in circles"
-            :center="circle.center"
-            :radius="circle.radius"
-            stroke="#ff0000"
-            fill="#ff0000"
-            @click="center=circle.position"
-          ></gmap-circle>
-        </gmap-map>
-        <!-- <div class="google-map" :id="mapName"></div> -->
+        </vuetify-google-autocomplete>
+
+        <div class="google-map" :id="mapName"></div>
       </v-flex>
     </v-layout>
   </v-flex>
 </template>
 
 <script lang="js">
-import { gmapApi } from 'vue2-google-maps'
+import VueGoogleAutocomplete from 'vue-google-autocomplete'
+import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
 
   export default  {
     name: 'google-map',
     props: [],
     components: {
-
+      VueGoogleAutocomplete,
+      VuetifyGoogleAutocomplete
     },
 
     data() {
       return {
         colors: {
-          primary: '000000'
+          primary: 'ff0000'
         },
         mapName: 'google-map',
         googleMap: {},
@@ -96,37 +96,53 @@ import { gmapApi } from 'vue2-google-maps'
       }
     },
 
+    mounted() {
+      this.initMap()
+    },
+
     methods: {
       initMap() {
         this.googleMapIcons = {
           default:
-            'https://www.google.com/maps/vt/icon/name=assets/icons/poi/tactile/pinlet_outline-1-small.png,assets/icons/poi/tactile/pinlet-1-small.png,assets/icons/poi/quantum/pinlet/home_pinlet-1-small.png&highlight=ffffff,000000,ffffff&color=ff000000?scale=2'
+            'https://www.google.com/maps/vt/icon/name=assets/icons/poi/tactile/pinlet_outline-1-small.png,assets/icons/poi/tactile/pinlet-1-small.png,assets/icons/poi/quantum/pinlet/home_pinlet-1-small.png&highlight=ffffff,'+this.colors.primary+',ffffff&color=ff000000?scale=2'
         }
         let element = document.getElementById(this.mapName)
         let options = this.defaultMapOptions
-        this.googleMap = new this.google.maps.Map(element, options)
+        this.googleMap = new google.maps.Map(element, options)
         this.loopLocations()
       },
 
       loopLocations() {
         let self = this
-        let mapIcon = self.googleMapIcons.default
 
-        new this.google.maps.Marker({
-          map: self.googleMap,
-          position: { lat: this.defaultMapOptions.center.lat, lng: this.defaultMapOptions.center.lng },
-          icon: mapIcon
-        })
+        this.markers.push(
+          new google.maps.Marker({
+            map: self.googleMap,
+            position: { lat: self.defaultMapOptions.center.lat, lng: self.defaultMapOptions.center.lng },
+            icon: self.googleMapIcons.default
+          })
+        )
       },
 
-      changeAddress(addressData) {
+      changeAddress(addressData, placeResultData, id) {
         console.log('addressData', addressData)
+        console.log('placeResultData', placeResultData)
+        console.log('id', id)
         let self = this
-        let mapBounds = new this.google.maps.LatLngBounds()
-        let mapCentre = new this.google.maps.LatLng()
 
-        if (addressData) {
-          addressData.address_components.forEach(element => {
+        this.markers.forEach(marker => {
+          marker.setMap(null)
+        })
+
+        this.circles.forEach(circle => {
+          circle.setMap(null)
+        })
+
+        let mapBounds = new google.maps.LatLngBounds()
+        let mapCentre = new google.maps.LatLng()
+
+        if (!!addressData && !!placeResultData && !!id) {
+          placeResultData.address_components.forEach(element => {
             if (element.types.indexOf('street_number') > -1) {
               self.userAddress.address.street_number = element.long_name
             }
@@ -150,38 +166,42 @@ import { gmapApi } from 'vue2-google-maps'
               self.userAddress.address.country.code = element.short_name
             }
           })
+
           if (!self.userAddress.coordinate) {
             self.userAddress.coordinate = {}
           }
           self.userAddress.address.formatted_address = addressData.formatted_address
 
-          self.userAddress.coordinate.latitude = addressData.geometry.location.lat()
-          self.userAddress.coordinate.longitude = addressData.geometry.location.lng()
+          self.userAddress.coordinate.latitude = addressData.latitude
+          self.userAddress.coordinate.longitude = addressData.longitude
 
-          mapCentre = new this.google.maps.LatLng(
+          mapCentre = new google.maps.LatLng(
             self.userAddress.coordinate.latitude,
             self.userAddress.coordinate.longitude
           )
 
-          self.$refs.mapRef.$mapPromise.then((map) => {
-            map.panTo(mapCentre)
-          })
+          this.googleMap.panTo(mapCentre)
 
           this.markers.length = 0
           this.markers.push(
-            new this.google.maps.Marker({
-              map: self.$refs.mapRef,
+            new google.maps.Marker({
+              map: self.googleMap,
               position: { lat: self.userAddress.coordinate.latitude, lng: self.userAddress.coordinate.longitude },
               icon: self.googleMapIcons.default
             })
           )
 
           this.circles.length = 0
-          const newMapCircle = new this.google.maps.Circle({
-            map: self.$refs.mapRef,
+          const newMapCircle = new google.maps.Circle({
+            map: self.googleMap,
             center: { lat: self.userAddress.coordinate.latitude, lng: self.userAddress.coordinate.longitude },
             position: { lat: self.userAddress.coordinate.latitude, lng: self.userAddress.coordinate.longitude },
-            radius: this.defaultMapOptions.radius
+            radius: self.defaultMapOptions.radius,
+            strokeColor: '#'+self.colors.primary,
+            strokeOpacity: 0.9,
+            strokeWeight: 1,
+            fillColor: '#'+self.colors.primary,
+            fillOpacity: 0.2,
           })
           this.circles.push(newMapCircle)
 
@@ -189,7 +209,7 @@ import { gmapApi } from 'vue2-google-maps'
             this.circles.forEach(function(circle) {
               mapBounds.union(circle.getBounds())
             })
-            this.$refs.mapRef.fitBounds(mapBounds)
+            this.googleMap.fitBounds(mapBounds)
           } else {
             mapBounds.extend(mapCentre)
           }
@@ -210,10 +230,6 @@ import { gmapApi } from 'vue2-google-maps'
           this.validateAddress(ref.name, false, onError)
         }
       }
-    },
-
-    computed: {
-      google: gmapApi
     }
 }
 
@@ -221,7 +237,14 @@ import { gmapApi } from 'vue2-google-maps'
 </script>
 
 <style scoped lang="scss">
-  .google-map {
-    min-height: 70vh;
-  }
+.input-text {
+  min-width: 300px;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #cccccc;
+}
+
+.google-map {
+  min-height: 70vh;
+}
 </style>
