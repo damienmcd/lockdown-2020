@@ -56,9 +56,6 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
 
     data() {
       return {
-        colors: {
-          primary: 'ff0000'
-        },
         mapName: 'google-map',
         googleMap: {},
         markers: [],
@@ -72,10 +69,7 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
           //   lat: 53.4467499,
           //   lng: -6.1963049
           // },
-          radius: 2000,
           zoom: 7,
-          pin: 'default',
-          type: 'default',
           disableDefaultUI: true,
           zoomControl: true
         },
@@ -90,7 +84,6 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
             formatted_address: ''
           },
           coordinate: { latitude: 0, longitude: 0 },
-          zoom: 7,
           radius: 2000,
           pin: 'default',
           type: 'default'
@@ -115,19 +108,6 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
         let element = document.getElementById(this.mapName)
         let options = this.defaultMapOptions
         this.googleMap = new google.maps.Map(element, options)
-        // this.loopLocations()
-      },
-
-      loopLocations() {
-        let self = this
-
-        this.markers.push(
-          new google.maps.Marker({
-            map: self.googleMap,
-            position: { lat: self.defaultMapOptions.center.lat, lng: self.defaultMapOptions.center.lng },
-            icon: self.googleMapIcons.default
-          })
-        )
       },
 
       changeAddress(addressData, placeResultData, id) {
@@ -172,21 +152,25 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
             }
           })
 
-          if (!self.userAddress.coordinate) {
-            self.userAddress.coordinate = {}
+          if (!this.userAddress.coordinate) {
+            this.userAddress.coordinate = {}
           }
-          self.userAddress.address.formatted_address = addressData.formatted_address
+          this.userAddress.address.formatted_address = addressData.formatted_address
 
-          self.userAddress.coordinate.latitude = addressData.latitude
-          self.userAddress.coordinate.longitude = addressData.longitude
+          this.userAddress.coordinate.latitude = addressData.latitude
+          this.userAddress.coordinate.longitude = addressData.longitude
 
           mapCentre = new google.maps.LatLng(
             self.userAddress.coordinate.latitude,
             self.userAddress.coordinate.longitude
           )
 
-          this.googleMap.panTo(mapCentre)
+          console.log('googleMap', this.googleMap)
+          if (Object.keys(this.googleMap).length === 0 && this.googleMap.constructor === Object) {
+            this.initMap()
+          }
 
+          this.googleMap.panTo(mapCentre)
           this.markers.length = 0
           this.markers.push(
             new google.maps.Marker({
@@ -201,7 +185,7 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
             map: self.googleMap,
             center: { lat: self.userAddress.coordinate.latitude, lng: self.userAddress.coordinate.longitude },
             position: { lat: self.userAddress.coordinate.latitude, lng: self.userAddress.coordinate.longitude },
-            radius: self.defaultMapOptions.radius,
+            radius: self.radius,
             strokeColor: self.$vuetify.theme.themes.light.primary,
             strokeOpacity: 0.9,
             strokeWeight: 2,
@@ -225,14 +209,7 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
 
       changeAddressNotFound(ref) {
         if (typeof ref === 'object' && 'name' in ref) {
-          let onError = function() {
-            this.errors.add({
-              field: 'User Address',
-              msg: 'Address not found.'
-            })
-          }
-
-          this.validateAddress(ref.name, false, onError)
+          alert('Address not found')
         }
       }
     }
