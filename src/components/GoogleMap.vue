@@ -103,7 +103,7 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
       initMap() {
         this.googleMapIcons = {
           default:
-            'https://www.google.com/maps/vt/icon/name=assets/icons/poi/tactile/pinlet_outline-1-small.png,assets/icons/poi/tactile/pinlet-1-small.png,assets/icons/poi/quantum/pinlet/home_pinlet-1-small.png&highlight=ffffff,FF5722,ffffff&color=ff000000?scale=2'
+            'https://www.google.com/maps/vt/icon/name=assets/icons/poi/tactile/pinlet_outline-1-small.png,assets/icons/poi/tactile/pinlet-1-small.png,assets/icons/poi/quantum/pinlet/home_pinlet-1-small.png&highlight=ffffff,212121,ffffff&color=ff000000?scale=2'
         }
         let element = document.getElementById(this.mapName)
         let options = this.defaultMapOptions
@@ -165,7 +165,6 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
             self.userAddress.coordinate.longitude
           )
 
-          console.log('googleMap', this.googleMap)
           if (Object.keys(this.googleMap).length === 0 && this.googleMap.constructor === Object) {
             this.initMap()
           }

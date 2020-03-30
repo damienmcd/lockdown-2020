@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar
       app
-      color="primary"
+      color="secondary"
       dark
     >
       <div class="d-flex align-center">
@@ -20,10 +20,10 @@
     <v-content>
       <GoogleMap/>
 
-      <v-flex xs12>
+      <v-flex xs12 class="footer">
         <v-layout wrap>
-          <v-flex xs12 align-center justify-center class="location-lookup pa-3">
-            Created by &copy;<a href="https://www.linkedin.com/in/damienmcdonnelldev/" target="_blank">Damien McDonnell</a>.
+          <v-flex xs12 align-center justify-center class="footer-content pa-3">
+            Created by <a href="https://www.linkedin.com/in/damienmcdonnelldev/" target="_blank">Damien McDonnell</a>.
           </v-flex>
         </v-layout>
       </v-flex>
@@ -47,3 +47,20 @@ export default {
   })
 }
 </script>
+
+<style lang="scss" scoped>
+.footer {
+  background-color: #212121;
+  color: #FEE64F;
+
+  a {
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #FEE64F;
+    }
+  }
+}
+</style>
