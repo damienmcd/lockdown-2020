@@ -18,6 +18,7 @@
     </v-app-bar>
 
     <v-content>
+      <Intro/>
       <GoogleMap/>
 
       <v-flex xs12 class="footer">
@@ -33,13 +34,15 @@
 
 <script>
 // import googleMapsLoader from './plugins/googleMaps'
+import Intro from './components/Intro'
 import GoogleMap from './components/GoogleMap'
 
 export default {
   name: 'App',
 
   components: {
-    GoogleMap,
+    Intro,
+    GoogleMap
   },
 
   data: () => ({
