@@ -1,7 +1,7 @@
 <template>
   <v-container xs12>
     <v-row wrap>
-      <v-flex xs12 align-center justify-center class="intro-wrapper">
+      <v-flex xs12 align-center justify-center class="intro-wrapper px-3">
         <h1 class="text-center mb-4">Lockdown Map</h1>
         <v-card class="my-4 pa-4">
           <div class="intro mb-4">
