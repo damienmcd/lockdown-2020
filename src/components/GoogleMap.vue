@@ -224,14 +224,14 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
             } else {
               this.mapBounds.extend(this.mapCentre)
             }
+
+            this.$nextTick(() => {
+              this.$refs.enter_address.clear()
+              this.$refs.enter_address.focus()
+            })
           } else {
             alert('Address already selected')
           }
-
-          this.$nextTick(() => {
-            this.$refs.enter_address.clear()
-            this.$refs.enter_address.focus()
-          })
         } else if (!addressData) {
           alert('Please enter a valid address')
         }
@@ -267,7 +267,6 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
         }
 
         this.$refs.enter_address.clear()
-        this.$refs.enter_address.focus()
       }
     }
 }
