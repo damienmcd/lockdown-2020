@@ -1,7 +1,7 @@
 <template>
   <v-container xs12>
     <v-row wrap>
-      <v-flex xs12 align-center justify-center class="location-lookup pa-3">
+      <v-flex xs12 align-center justify-center class="location-lookup">
         <v-card class="my-4 pt-2">
           <div class="content-center my-4">
             <vuetify-google-autocomplete
