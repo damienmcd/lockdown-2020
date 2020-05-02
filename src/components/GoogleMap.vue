@@ -166,11 +166,6 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
               })
             )
 
-            // this.mapCentre = new google.maps.LatLng(
-            //   position.coords.latitude,
-            //   position.coords.longitude
-            // )
-
             this.googleMap.setCenter(currentMapCenter)
             this.googleMap.setZoom(10)
 
@@ -209,11 +204,11 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
         }
       },
 
-      handleLocationError(browserHasGeolocation, infoWindow, pos) {
-        infoWindow.setPosition(pos)
+      handleLocationError(browserHasGeolocation, infoWindow, position) {
+        infoWindow.setPosition(position)
         infoWindow.setContent(browserHasGeolocation ?
-                              'Error: The Geolocation service failed.' :
-                              'Error: Your browser doesn\'t support geolocation.')
+          'Error: The Geolocation service failed.' :
+          'Error: Your browser doesn\'t support geolocation.')
         infoWindow.open(this.googleMap)
       },
 
