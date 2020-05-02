@@ -131,7 +131,8 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
           '#FF9800',
           '#4CAF50',
           '#2196F3',
-          '#FF5252'
+          '#FF5252',
+          '#FEE64F'
         ]
       }
     },
@@ -165,8 +166,17 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
               })
             )
 
+            // this.mapCentre = new google.maps.LatLng(
+            //   position.coords.latitude,
+            //   position.coords.longitude
+            // )
+
             this.googleMap.setCenter(currentMapCenter)
             this.googleMap.setZoom(10)
+
+            this.userAddresses.push(
+              { "id": "1", "address": { "formatted_address": "Current Location" }, "coordinate": { "latitude": position.coords.latitude, "longitude": position.coords.longitude }, "radius": self.radius, "pin": "default", "type": "default" }
+            )
 
             this.circles.push(
               new google.maps.Circle({
@@ -177,7 +187,7 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
                 strokeColor: self.googleMapIconColours[0],
                 strokeOpacity: 0.9,
                 strokeWeight: 2,
-                fillColor: self.googleMapIconColours[0],
+                fillColor: self.googleMapIconColours[5],
                 fillOpacity: 0.2,
               })
             )
