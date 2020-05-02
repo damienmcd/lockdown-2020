@@ -167,6 +167,29 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
 
             this.googleMap.setCenter(currentMapCenter)
             this.googleMap.setZoom(10)
+
+            this.circles.push(
+              new google.maps.Circle({
+                map: self.googleMap,
+                center: { lat: position.coords.latitude, lng: position.coords.longitude },
+                position: { lat: position.coords.latitude, lng: position.coords.longitude },
+                radius: self.radius,
+                strokeColor: self.googleMapIconColours[0],
+                strokeOpacity: 0.9,
+                strokeWeight: 2,
+                fillColor: self.googleMapIconColours[0],
+                fillOpacity: 0.2,
+              })
+            )
+
+            if (this.circles.length > 0) {
+              this.circles.forEach(function(circle) {
+                self.mapBounds.union(circle.getBounds())
+              })
+              this.googleMap.fitBounds(this.mapBounds)
+            } else {
+              this.mapBounds.extend(this.mapCentre)
+            }
           },
           error => {
             if (error.message === 'User denied Geolocation') {
