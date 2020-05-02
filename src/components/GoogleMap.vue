@@ -97,10 +97,6 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
             lat: 53.3549189,
             lng: -7.8582014
           },
-          // center: {
-          //   lat: 53.4467499,
-          //   lng: -6.1963049
-          // },
           zoom: 7,
           disableDefaultUI: true,
           zoomControl: true
@@ -146,11 +142,46 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
 
     methods: {
       initMap() {
+        const self = this
         let element = document.getElementById(this.mapName)
         let options = this.defaultMapOptions
+        let infoWindow = null
         this.googleMap = new google.maps.Map(element, options)
         this.mapBounds = new google.maps.LatLngBounds()
         this.mapCentre = new google.maps.LatLng()
+
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(position => {
+            var currentMapCenter = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            }
+
+            this.markers.push(
+              new google.maps.Marker({
+                map: self.googleMap,
+                position: { lat: position.coords.latitude, lng: position.coords.longitude },
+                icon: self.googleMapIcons[0]
+              })
+            )
+
+            this.googleMap.setCenter(currentMapCenter)
+            this.googleMap.setZoom(10)
+          },
+          error => {
+            if (error.message === 'User denied Geolocation') {
+              this.googleMap.setCenter(this.defaultMapOptions.center)
+            }
+          })
+        }
+      },
+
+      handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos)
+        infoWindow.setContent(browserHasGeolocation ?
+                              'Error: The Geolocation service failed.' :
+                              'Error: Your browser doesn\'t support geolocation.')
+        infoWindow.open(this.googleMap)
       },
 
       changeAddress(addressData, placeResultData, id) {
