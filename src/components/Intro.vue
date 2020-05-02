@@ -5,9 +5,10 @@
         <h1 class="text-center mb-4">Lockdown Map</h1>
         <v-card class="my-4 pa-4">
           <div class="intro mb-4">
-            <p>Due to the increase in the number of infections of the COVID-19 Virus, also known as CoronaVirus, the Irish government has implemented new restrictions.</p>
-            <p>Non-essential travel outside your home is restricted to a maximum of 2KM for exercise.</p>
-            <p>Below you can enter an address to see the recommended limit on the map.</p>
+            <p>As we battle against the CoronaVirus the Irish government has released a plan to ease the restrictions currently in place.</p>
+            <p>Non-essential travel outside your home is restricted for exercise.</p>
+            <p>Below you can enter an address to see the distance from your home on the map.</p>
+            <p>The 2km limit is in place until Monday the 4th of May, increasing to 5km on Tuesday the 5th of May. The current plan is to increase this limit to 20km from Monday the 8th of June.</p>
             <p>You can read more about the COVID-19 restrictions on the <a href="https://www2.hse.ie/coronavirus/" target="_blank">HSE</a> website.</p>
           </div>
         </v-card>

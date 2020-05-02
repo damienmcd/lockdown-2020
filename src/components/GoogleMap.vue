@@ -4,9 +4,10 @@
       <v-flex xs12 align-center justify-center class="location-lookup px-3">
         <v-card class="my-4 pt-2">
           <div class="content-center my-4">
+            <h3 mb-4>Enter Address</h3>
             <vuetify-google-autocomplete
               name="Enter Address"
-              class="mb-2"
+              class="mt-2 mb-4"
               autofocus
               clearable
               :disabled="userAddresses.length >= 5"
@@ -27,27 +28,39 @@
               :error-messages="errors.collect('Enter Address')"
               data-vv-as="Enter Address"
             />
-          </div>
 
-          <div class="content-center my-4 address-list">
-            <v-card
-              xs12
-              class="d-flex address-list-item my-2 pa-2 justify-space-between align-center"
-              v-for="(userAddressItem, index) in userAddresses"
-              :key="userAddressItem.id"
-              :id="`user-address-${userAddressItem.id}`"
-            >
-              {{ userAddressItem.address.formatted_address }}
-              <v-spacer></v-spacer>
-              <v-btn
-                class="ml-4"
-                icon
-                color="deep-orange"
-                @click="removeAddress(index)"
+            <h3>Select Distance</h3>
+            <v-radio-group class="mt-1" v-model="radius">
+              <v-radio
+                v-for="mapDistance in mapDistances"
+                :key="mapDistance.distance"
+                :label="`${mapDistance.label}`"
+                :value="mapDistance.distance"
+                @change="updateRadius(mapDistance.distance)"
+              ></v-radio>
+            </v-radio-group>
+
+            <div v-show="userAddresses.length" class="mt-0 mb-4 address-list">
+              <h3>Addresses</h3>
+              <v-card
+                xs12
+                class="d-flex address-list-item my-2 pa-2 align-center justify-space-between"
+                v-for="(userAddressItem, index) in userAddresses"
+                :key="userAddressItem.id"
+                :id="`user-address-${userAddressItem.id}`"
               >
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-            </v-card>
+                {{ userAddressItem.address.formatted_address }}
+                <v-spacer></v-spacer>
+                <v-btn
+                  class="ml-4"
+                  icon
+                  color="deep-orange"
+                  @click="removeAddress(index)"
+                >
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </v-card>
+            </div>
           </div>
 
           <div class="lookup-map my-4">
@@ -71,10 +84,12 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
 
     data() {
       return {
+        radioGroup: 1,
         mapName: 'google-map',
         googleMap: {},
         mapCentre: {},
         mapBounds: {},
+        mapDistances: [{ label: '2km', distance: 2000 }, { label: '5km', distance: 5000 }, { label: '20km', distance: 20000 }],
         markers: [],
         circles: [],
         defaultMapOptions: {
@@ -203,7 +218,7 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
             )
 
             this.circles.push(
-                new google.maps.Circle({
+              new google.maps.Circle({
                 map: self.googleMap,
                 center: { lat: newUserAddress.coordinate.latitude, lng: newUserAddress.coordinate.longitude },
                 position: { lat: newUserAddress.coordinate.latitude, lng: newUserAddress.coordinate.longitude },
@@ -227,7 +242,6 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
 
             this.$nextTick(() => {
               this.$refs.enter_address.clear()
-              this.$refs.enter_address.focus()
             })
           } else {
             alert('Address already selected')
@@ -267,6 +281,56 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
         }
 
         this.$refs.enter_address.clear()
+      },
+
+      updateRadius(newRadius) {
+        this.radius = newRadius
+        this.updateCircles()
+      },
+
+      updateCircles() {
+        const self = this
+        let newCircles = []
+
+        this.circles.forEach((circle, index) => {
+          circle.radius = self.radius
+
+          let newCircle = {
+            center: {
+              lat: self.userAddresses[index].coordinate.latitude,
+              lng: self.userAddresses[index].coordinate.longitude
+            }
+          }
+
+          newCircles.push(
+            new google.maps.Circle({
+              map: self.googleMap,
+              center: newCircle.center,
+              position: newCircle.center,
+              radius: self.radius,
+              strokeColor: self.googleMapIconColours[0],
+              strokeOpacity: 0.9,
+              strokeWeight: 2,
+              fillColor: self.googleMapIconColours[0],
+              fillOpacity: 0.2,
+            })
+          )
+
+          this.circles[index].setMap(null)
+          this.circles[index] = null
+        })
+        this.circles.length = 0
+        this.circles = [...newCircles]
+
+        this.mapBounds = new google.maps.LatLngBounds()
+        if (this.circles.length > 0) {
+          this.circles.forEach(function(circle) {
+            self.mapBounds.union(circle.getBounds())
+          })
+          this.googleMap.fitBounds(this.mapBounds)
+        } else {
+          this.mapBounds.extend(this.mapCentre)
+        }
       }
     }
 }
