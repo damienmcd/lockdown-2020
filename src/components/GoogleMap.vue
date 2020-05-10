@@ -114,11 +114,11 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete'
             formatted_address: ''
           },
           coordinate: { latitude: 0, longitude: 0 },
-          radius: 2000,
+          radius: 5000,
           pin: 'default',
           type: 'default'
         },
-        radius: 2000,
+        radius: 5000,
         googleMapIcons: [
           'https://www.google.com/maps/vt/icon/name=assets/icons/poi/tactile/pinlet_outline-1-small.png,assets/icons/poi/tactile/pinlet-1-small.png,assets/icons/poi/quantum/pinlet/home_pinlet-1-small.png&highlight=ffffff,212121,ffffff&color=ff000000?scale=2',
           'https://www.google.com/maps/vt/icon/name=assets/icons/poi/tactile/pinlet_outline-1-small.png,assets/icons/poi/tactile/pinlet-1-small.png,assets/icons/poi/quantum/pinlet/home_pinlet-1-small.png&highlight=ffffff,FF9800,ffffff&color=ff000000?scale=2',
