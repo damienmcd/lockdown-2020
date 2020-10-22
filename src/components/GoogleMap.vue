@@ -29,7 +29,7 @@
               data-vv-as="Enter Address"
             />
 
-            <h3>Select Distance</h3>
+            <!-- <h3>Select Distance</h3>
             <v-radio-group class="mt-1" v-model="radius">
               <v-radio
                 v-for="mapDistance in mapDistances"
@@ -38,7 +38,7 @@
                 :value="mapDistance.distance"
                 @change="updateRadius(mapDistance.distance)"
               ></v-radio>
-            </v-radio-group>
+            </v-radio-group> -->
 
             <div v-show="userAddresses.length" class="mt-0 mb-4 address-list">
               <h3>Addresses</h3>
